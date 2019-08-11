@@ -11,6 +11,10 @@ const port = process.env.PORT;
 const router = express.Router();
 dotenv.config();
 
+// Debugging
+
+let testconnection = false;
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -20,6 +24,7 @@ const connection = mongoose.connection;
 
 connection.once("open", () => {
   console.log("Connection to MongoDB established successfully");
+  testconnection = true;
 });
 
 // Example route for searching DB for ID
@@ -38,7 +43,7 @@ router.route("/user").get((req, res) => {
   });
 });
 
-app.get("/", (req, res) => res.send("DB Connection URL: " + process.env.URL));
+app.get("/", (req, res) => res.send("Is db connected?: - " + testconnection));
 
 app.use("/", router);
 
