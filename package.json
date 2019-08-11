@@ -1,0 +1,11 @@
+{
+  "name": "asd-venue-be",
+  "version": "1.0.0",
+  "description": "Advanced Software Dev - Venue Project Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
