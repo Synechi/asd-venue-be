@@ -38,7 +38,7 @@ router.route("/user").get((req, res) => {
   });
 });
 
-app.get("/", (req, res) => res.send("Hello World!"));
+app.get("/", (req, res) => res.send("DB Connection URL: " + process.env.URL));
 
 app.use("/", router);
 
