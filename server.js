@@ -43,8 +43,10 @@ router.route("/user").get((req, res) => {
   });
 });
 
-app.get("/", (req, res) => res.send("Is db connected?: - " + testconnection));
+app.get("/", (req, res) => res.send("Is db connected? - " + testconnection));
 
 app.use("/", router);
 
-app.listen(port, () => console.log("Express sever running on port " + port));
+app.listen(port || 4000, () =>
+  console.log("Express sever running on port " + port)
+);
