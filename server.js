@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import User from "./models/User";
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT;
 const router = express.Router();
 dotenv.config();
 
