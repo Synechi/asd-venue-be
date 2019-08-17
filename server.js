@@ -44,6 +44,7 @@ router.route("/user").post((req, res) => {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
     password: req.body.password,
   });
   user.save()
@@ -51,9 +52,9 @@ router.route("/user").post((req, res) => {
     console.log(result);
     
   })
-  res.send(
-    "{'hello: 'hi'}"
-  );
+  // res.send(
+  //   "{'hello: 'hi'}"
+  // );
   // console.log(req.body);
 })
 
