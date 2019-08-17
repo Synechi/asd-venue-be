@@ -9,20 +9,20 @@ import User from "./models/User"; //pulling the schema for the structure of how 
 const app = express(); //making a simple express app
 const port = process.env.PORT; //assigning a port (Heroku assigns its own port)
 const router = express.Router(); //creates a router object that is of the router function
-dotenv.config(); //allows us to use the .env file when developing code 
+dotenv.config(); //allows us to use the .env file when developing code
 
 // Debugging
 
 let testconnection = false;
 
 app.use(cors()); //establishing the connecting with an external server database
-app.use(bodyParser.json()); //same as above but for passing json through 
+app.use(bodyParser.json()); //same as above but for passing json through
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
 
-const connection = mongoose.connection; //creating an object out of that connection 
+const connection = mongoose.connection; //creating an object out of that connection
 
-//testing to see if the connection is successful 
+//testing to see if the connection is successful
 connection.once("open", () => {
   console.log("Connection to MongoDB established successfully");
   testconnection = true;
@@ -43,6 +43,12 @@ router.route("/user").get((req, res) => {
     else res.json(users);
   });
 });
+
+//Google maps API Route
+router.route("/gmapi").get((req, res) => {
+  res.send({ gmapi: process.env.GMAPI });
+});
+
 //creating a route for the backend that will pass through the json data for what you are querying
 //.get displays and gets data on the route (but only using the reponse part)
 
