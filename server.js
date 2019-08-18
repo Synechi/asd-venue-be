@@ -30,7 +30,7 @@ connection.once("open", () => {
 
 // Example route for searching DB for ID
 router.route("/user/:id").get((req, res) => {
-  console.log(req.params.id)
+  console.log(req.params.id);
   User.findByID(req.params.id, (err, user) => {
     if (err) console.log(err);
     else res.json(user);
@@ -44,23 +44,18 @@ router.route("/user").post((req, res) => {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
-    password: req.body.password,
+    password: req.body.password
   });
-  user.save()
-  .then(result => {
+  user.save().then(result => {
     console.log(result);
-    
-  })
-  res.send(
-    "{'hello: 'hi'}"
-  );
+  });
+  res.send("{'hello: 'hi'}");
   // console.log(req.body);
-})
+});
 
 // Example route of searching DB for all users (Doing a query on the database)
 router.route("/user").get((req, res) => {
-  User.find();
-  find((err, users) => {
+  User.find((err, users) => {
     if (err) console.log(err);
     else res.json(users);
   });
@@ -75,7 +70,6 @@ router.route("/gmapi").get((req, res) => {
 //.get displays and gets data on the route (but only using the reponse part)
 
 app.get("/", (req, res) => res.send("Is db connected? - " + testconnection));
-
 
 app.use("/", router);
 
