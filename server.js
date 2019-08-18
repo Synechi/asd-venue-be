@@ -46,7 +46,7 @@ router.route("/user").get((req, res) => {
 
 //Google maps API Route
 router.route("/gmapi").get((req, res) => {
-  res.send({ gmapi: process.env.GMAPI });
+  res.json([process.env.GMAPI]);
 });
 
 //creating a route for the backend that will pass through the json data for what you are querying
