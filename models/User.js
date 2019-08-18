@@ -18,6 +18,9 @@ let User = new Schema({
   },
   password: {
     type: String
+  },
+  preference: {
+    type: String
   }
 });
 

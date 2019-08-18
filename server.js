@@ -39,6 +39,8 @@ router.route("/user/:id").get((req, res) => {
 
 router.route("/user").post((req, res) => {
   console.dir(req.body.lastname);
+  const MyModel = new User ();
+  // MyModel.find({ email: req.body.email }, null, function (err, docs) {});
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
     firstname: req.body.firstname,
@@ -46,12 +48,22 @@ router.route("/user").post((req, res) => {
     email: req.body.email,
     phoneNumber: req.body.phoneNumber,
     password: req.body.password,
+    preference: req.body.preference,
   });
+
+//   user.model.count({email: req.body.email}, function (err, count){ 
+//     if(count>0){
+//       console.log("hellofjkdshfs");
+//     }
+// }); 
+
   user.save()
   .then(result => {
     console.log(result);
     
   })
+  res.send({body: "Account has been created"});
+
   // res.send(
   //   "{'hello: 'hi'}"
   // );
