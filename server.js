@@ -45,10 +45,12 @@ router.route("/user").post((req, res) => {
     lastname: req.body.lastname,
     email: req.body.email,
     password: req.body.password
-  });
+  });    
+
   user.save().then(result => {
     console.log(result);
   });
+
   res.send("{'hello: 'hi'}");
   // console.log(req.body);
 });
@@ -61,10 +63,58 @@ router.route("/user").get((req, res) => {
   });
 });
 
+
+router.route("/bella").get((req, res) => {
+  res.send("Hello!")
+  });
+
 //Google maps API Route
 router.route("/gmapi").get((req, res) => {
   res.json([process.env.GMAPI]);
 });
+
+//Friend APIS 
+router.route("/displayUsers").get((req, res) => {
+  User.find((err, users) => {
+    if (err) console.log(err);
+    else res.json(users);
+  });
+});  
+
+//Route in Progress - Saving a Friend Request to the Database 
+router.route("/friendRequest").post((req,res) => {
+  
+  //Hardcoding the userID for testing purposes because sessions are not setup yet 
+  userID = "5d4fde82aaeeb656e0205a38";  
+
+  //Use that userID to to find its JSON file in the DB 
+  User.findById(userID, (err, user) => {
+    if(err) console.log(err);
+    else { 
+      const updateUser = res.json(user); //storing json file into this variable 
+    }
+    updateUser['USER_FRIENDS'].push(req.json.friendID, 'Sent');
+    user.save((err, updateUser) => {
+        if (err) next(err);
+        res.json(updateUser);
+    });
+    
+});
+
+User.findById(req.json.friendID, (err, user) => { //finding userID of friend 
+  if(err) console.log(err);
+  else { 
+    const updateFriend = res.json(user); //storing json file into this variable 
+  }
+  updateFriend['USER_FRIENDS'].push(userID, 'Received'); //updating JSON for the friend user 
+  user.save((err, updateFriend) => {
+      if (err) next(err);
+      res.json(updateFriend);
+  });
+
+});
+});
+
 
 //creating a route for the backend that will pass through the json data for what you are querying
 //.get displays and gets data on the route (but only using the reponse part)
