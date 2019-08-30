@@ -25,14 +25,12 @@ let User = new Schema({
   password: {
     type: String
   },
-  USER_FRIENDS: { 
-    type: Array,
-      properties: { 
-        friendID: {type: mongoose.Schema.Types.ObjectId },
-        friendStatus: {type: String}
-      }
-  }
-  
+  USER_FRIENDS: [{
+    friendID: Schema.Types.ObjectId,  
+    friendStatus: String,
+    _id: false
+  }] 
+      
 });
 
 export default mongoose.model("User", User);

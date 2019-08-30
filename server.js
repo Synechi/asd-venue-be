@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import User from "./models/User"; //pulling the schema for the structure of how a collection is supposed to be displayed, pulling the schema from mongoose and then creating the schema for users
+import { stringify } from "querystring";
+import { parse } from "path";
 
 const app = express(); //making a simple express app
 const port = process.env.PORT; //assigning a port (Heroku assigns its own port)
@@ -64,9 +66,6 @@ router.route("/user").get((req, res) => {
 });
 
 
-router.route("/bella").get((req, res) => {
-  res.send("Hello!")
-  });
 
 //Google maps API Route
 router.route("/gmapi").get((req, res) => {
@@ -74,6 +73,7 @@ router.route("/gmapi").get((req, res) => {
 });
 
 //Friend APIS 
+//Route to display users as 'suggested friends' 
 router.route("/displayUsers").get((req, res) => {
   User.find((err, users) => {
     if (err) console.log(err);
@@ -85,35 +85,37 @@ router.route("/displayUsers").get((req, res) => {
 router.route("/friendRequest").post((req,res) => {
   
   //Hardcoding the userID for testing purposes because sessions are not setup yet 
-  userID = "5d4fde82aaeeb656e0205a38";  
-
   //Use that userID to to find its JSON file in the DB 
-  User.findById(userID, (err, user) => {
+  User.findById("5d626b53fa8afa89b5f13ebd", (err, user) => {
     if(err) console.log(err);
     else { 
-      const updateUser = res.json(user); //storing json file into this variable 
+      user['USER_FRIENDS'].push({"friendID": req.body.friendID, "friendStatus": 'Sent'}); //pushing new object with friend request  
     }
-    updateUser['USER_FRIENDS'].push(req.json.friendID, 'Sent');
-    user.save((err, updateUser) => {
+
+    user.save((err, user) => {
         if (err) next(err);
-        res.json(updateUser);
+        User.findById(req.body.friendID, (err, friend) => {
+          if(err) console.log(err);
+          else { 
+            friend['USER_FRIENDS'].push({"friendID": "5d626b53fa8afa89b5f13ebd", "friendStatus":'Received'}); //pushing new sub-array with friend request  
+          }
+          user.save((err, friend) => {
+              if (err) next(err);
+              res.json(user);
+              
+          });
+          
+      });
+      
     });
     
-});
-
-User.findById(req.json.friendID, (err, user) => { //finding userID of friend 
-  if(err) console.log(err);
-  else { 
-    const updateFriend = res.json(user); //storing json file into this variable 
-  }
-  updateFriend['USER_FRIENDS'].push(userID, 'Received'); //updating JSON for the friend user 
-  user.save((err, updateFriend) => {
-      if (err) next(err);
-      res.json(updateFriend);
   });
+  
+});
 
-});
-});
+
+
+
 
 
 //creating a route for the backend that will pass through the json data for what you are querying
