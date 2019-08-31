@@ -47,7 +47,7 @@ router.route("/user").post((req, res) => {
     lastname: req.body.lastname,
     email: req.body.email,
     password: req.body.password
-  });    
+  });
 
   user.save().then(result => {
     console.log(result);
@@ -65,58 +65,74 @@ router.route("/user").get((req, res) => {
   });
 });
 
-
-
 //Google maps API Route
 router.route("/gmapi").get((req, res) => {
   res.json([process.env.GMAPI]);
 });
 
-//Friend APIS 
-//Route to display users as 'suggested friends' 
+//Friend APIS - Bella L
+
+//Route to display users as 'suggested friends'
 router.route("/displayUsers").get((req, res) => {
   User.find((err, users) => {
     if (err) console.log(err);
     else res.json(users);
   });
-});  
+});
 
-//Route in Progress - Saving a Friend Request to the Database 
-router.route("/friendRequest").post((req,res) => {
-  
-  //Hardcoding the userID for testing purposes because sessions are not setup yet 
-  //Use that userID to to find its JSON file in the DB 
-  User.findById("5d626b53fa8afa89b5f13ebd", (err, user) => {
-    if(err) console.log(err);
-    else { 
-      user['USER_FRIENDS'].push({"friendID": req.body.friendID, "friendStatus": 'Sent'}); //pushing new object with friend request  
+function search(id, array) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i]["friendID"] == id) {
+      return id;
     }
+  }
+}
 
-    user.save((err, user) => {
-        if (err) next(err);
-        User.findById(req.body.friendID, (err, friend) => {
-          if(err) console.log(err);
-          else { 
-            friend['USER_FRIENDS'].push({"friendID": "5d626b53fa8afa89b5f13ebd", "friendStatus":'Received'}); //pushing new sub-array with friend request  
-          }
-          user.save((err, friend) => {
-              if (err) next(err);
-              res.json(user);
-              
+//Updates 2 user documents in the DB with the sent friend request
+router.route("/friendRequest").post((req, res, next) => {
+  //Hardcoding the userID for testing purposes because login feature is not established - please replace with req.session._id
+  //Use that userID to to find its JSON file in the DB
+  
+    User.findById("5d626b53fa8afa89b5f13ebd", (err, user) => {
+      if (err) console.log(err);
+      else {
+        if (
+          search(req.body.friendID, user["USER_FRIENDS"]) === req.body.friendID
+        ) {
+          next(new Error("FRIEND_ALREADY_EXISTS"));
+        } else {
+          user["USER_FRIENDS"].push({
+            friendID: req.body.friendID,
+            friendStatus: "Sent"
+          }); //update the document of the user in session
+
+          user.save((err, user) => {
+            if (err) next(err);
+            User.findById(req.body.friendID, (err, friend) => {
+              if (err) console.log(err);
+              else {
+                friend["USER_FRIENDS"].push({
+                  friendID: "5d626b53fa8afa89b5f13ebd",
+                  friendStatus: "Received"
+                }); //update the document of the friend the request is being sent to
+              }
+              friend.save((err, friend) => {
+                if (err) next(err);
+                res.json(user);
+              });
+            });
           });
-          
-      });
-      
+        }
+      }
     });
-    
-  });
   
 });
 
+//Default Error-Handler: 
+app.use(function(error, req, res, next) {
 
-
-
-
+  res.json({ message: error.message});
+});
 
 //creating a route for the backend that will pass through the json data for what you are querying
 //.get displays and gets data on the route (but only using the reponse part)
@@ -128,3 +144,4 @@ app.use("/", router);
 app.listen(port || 4000, () =>
   console.log("Express sever running on port " + port)
 );
+

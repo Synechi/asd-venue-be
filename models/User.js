@@ -1,5 +1,5 @@
 /**
- * Bella L (24/08/19) - updated the user schema with the User_Friends object.
+ * Bella L (24/08/19) - updated the user schema with the User_Friends array.
  * Bella L (24/08/19) - updated the user schema to reflect Data Dictionary
  * 
  */
