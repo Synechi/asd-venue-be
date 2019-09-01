@@ -138,6 +138,37 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
 // }
 
 //Bella L created 31/08/19 - Api that displays all the user's pending friend requests
+router.route("/currentFriends").get((req, res) => {
+  User.aggregate([
+    {
+      $match: { _id: mongoose.Types.ObjectId("5d6a819446f3f4e9240a5258") }
+    },
+    {
+      $project: {
+        USER_FRIENDS: {
+          $filter: {
+            input: "$USER_FRIENDS",
+            as: "friend",
+            cond: { $eq: ["$$friend.friendStatus", "Accepted"] }
+          }
+        }
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "USER_FRIENDS.friendID",
+        foreignField: "_id",
+        as: "friends"
+      }
+    }
+  ]).exec((err, friends) => {
+    if (err) console.log(err);
+    else res.json(friends);
+  });
+});
+
+
 router.route("/pendingRequests").get((req, res) => {
   User.aggregate([
     {
