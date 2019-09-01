@@ -15,11 +15,15 @@ function routes(User) {
     const userRouter = express.Router();
     userRouter.route("/user").post((req, res) => {
         const user = new User(req.body);
-        console.dir(req.body.firstname);
         const query = {};
-        console.dir(req.body);
         query.email = user.email;
-        console.dir(query);
+
+
+        // console.dir(req.body.firstname);
+        // const query = {};
+        // console.dir(req.body);
+        // query.email = user.email;
+        // console.dir(query);
 
         User.findOne(query, (err, users) => {
           console.log(users);
@@ -29,31 +33,22 @@ function routes(User) {
           }
           else if (users && users._id) {
             console.log(users.email);
-            var status = {
-              "Status" : "Email Address already exists"
-            };
-            return res.status(200).send(status);
-            // return res.status(200).send("{'Status': 'Email Address already exists'}");
+            return res.status(200).send("{'Status': 'Email Address already exists'}");
             // console.log(users);
           }
-          else {
-            const user1 = new User({
-              _id: new mongoose.Types.ObjectId(),
-              firstname: req.body.firstname,
-              lastname: req.body.lastname,
-              email: req.body.email,
-              password: req.body.password
-            });
-            user1.save().then(result => {
-              console.log(result);
-            });
-            var status = {
-              "Status" : "Account has been created"
-            };
-            return res.status(201).send(status);
-            // return res.status(201).send("{Status': 'Account has been created'}");
-            // return res.status(201).send("{jdklfjs");
-          }
+        //   else {
+        //     const user1 = new User({
+        //       _id: new mongoose.Types.ObjectId(),
+        //       firstname: req.body.firstname,
+        //       lastname: req.body.lastname,
+        //       email: req.body.email,
+        //       password: req.body.password
+        //     });
+        //     user1.save().then(result => {
+        //       console.log(result);
+        //     });
+        //     return res.status(201).send("{'Status': 'Account has been created'}");
+        //   }
         });
       });
     return userRouter;
