@@ -93,7 +93,7 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
   //Hardcoding the userID for testing purposes because login feature is not established - please replace with req.session._id
   //Use that userID to to find its JSON file in the DB
 
-  User.findById("5d6a854be6e391e9e4357e8b", (err, user) => {
+  User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
     if (err) console.log(err);
     else {
       if (
@@ -113,7 +113,7 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
             if (err) console.log(err);
             else {
               friend["USER_FRIENDS"].push({
-                friendID: "5d6a854be6e391e9e4357e8b",
+                friendID: "5d6a819446f3f4e9240a5258",
                 friendStatus: "Received"
               }); //update the document of the friend the request is being sent to
             }
@@ -141,7 +141,7 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
 router.route("/pendingRequests").get((req, res) => {
   User.aggregate([
     {
-      $match: { _id: mongoose.Types.ObjectId("5d651255e0029ab11191e793") }
+      $match: { _id: mongoose.Types.ObjectId("5d6a844cc0f026e9cba26c4c") }
     },
     {
       $project: {
@@ -167,6 +167,40 @@ router.route("/pendingRequests").get((req, res) => {
     else res.json(friends);
   });
 });
+
+function updateFriendStatus(friendid, array, status) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i]["friendID"] == friendid) {
+        
+      array[i]["friendStatus"] = status;
+      
+    }
+  }
+}
+
+router.route("/friendStatusUpdate/:friendID").put((req, res, next) => {
+  //Hardcoding the userID for testing purposes because login feature is not established - please replace with req.session._id
+  //Use that userID to to find its JSON file in the DB
+
+  User.findById("5d6a844cc0f026e9cba26c4c", (err, user) => {
+    if (err) console.log(err);
+    else {
+          updateFriendStatus(req.params.friendID, user["USER_FRIENDS"], req.body.friendStatus);
+    }
+        user.save((err, user) => {
+          if (err) next(err);
+          User.findById(req.params.friendID, (err, friend) => {
+            if (err) console.log(err);
+            else { updateFriendStatus("5d6a844cc0f026e9cba26c4c", friend["USER_FRIENDS"], req.body.friendStatus);
+               }
+            friend.save((err, friend) => {
+              if (err) next(err);
+              res.json(user);
+            });
+          });
+        });
+      });
+  });
 
 //Default Error-Handler:
 app.use(function(error, req, res, next) {
