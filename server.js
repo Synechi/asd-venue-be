@@ -28,10 +28,9 @@ connection.once("open", () => {
   testconnection = true;
 });
 
-// Example route for searching DB for ID
+//route for searching DB for users with ID
 router.route("/user/:id").get((req, res) => {
-  console.log(req.params.id);
-  User.findByID(req.params.id, (err, user) => {
+  User.findById(req.params.id, (err, user) => {
     if (err) console.log(err);
     else res.json(user);
   });
@@ -55,9 +54,9 @@ router.route("/user").post((req, res) => {
 
 // Example route of searching DB for all users (Doing a query on the database)
 router.route("/user").get((req, res) => {
-  User.find((err, users) => {
+  User.find((err, user) => {
     if (err) console.log(err);
-    else res.json(users);
+    else res.json(user);
   });
 });
 
@@ -76,3 +75,53 @@ app.use("/", router);
 app.listen(port || 4000, () =>
   console.log("Express sever running on port " + port)
 );
+
+// //create route for returning all venue lists 
+// router.route("/venuelist").get((req, res) => {
+//   venuelist.find((err, venuelists) => {
+//     if (err) console.log(err);
+//     else res.json(venuelists);
+//   });
+// });
+
+// //creating a route for creating a new list
+// app.post("/venuelist/", (req, res) => {
+//   var myData = new venuelist(req.body);
+//   myData.save()
+//   .then(item => {
+//   res.send("List created and saved");
+//   })
+//   .catch(err => {
+//   res.status(400).send("unable to save to database");
+//   });
+//  });
+
+//route for searching DB with ID to get all lists of one user
+router.route("/lists/:id").get((req, res) => {
+  User.findById(req.params.id, {venuelists: 1, _id: 0}, (err, user) => {
+    if (err) console.log(err);
+    else res.json(user);
+  });
+});
+
+//route for creating a list for a user
+router.route("/createlist/:id").patch((req, res) => {
+  var list = {
+    name: req.body.name,
+    colour: req.body.colour
+  }
+  User.findByIdAndUpdate(req.params.id, {$push: {venuelists: {name: req.body.name, colour: req.body.colour}}}, {new:true}, (err,doc) => {
+    if (err) res.status(500).send(err);
+    return console.log(doc);
+});
+});
+
+//route for deleting a list for a user
+router.route("/deletelist/:id/:listid").delete((req, res) => {
+  console.log("delete list");
+  console.log(req.params);
+  User.findByIdAndUpdate(req.params.id, {$pull: { venuelists: {_id: req.params.listid}}}, {new:true}, (err,doc) => {
+    if (err) res.status(500).send(err);
+    return console.log(doc);
+  });
+});
