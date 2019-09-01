@@ -93,11 +93,12 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
   //Hardcoding the userID for testing purposes because login feature is not established - please replace with req.session._id
   //Use that userID to to find its JSON file in the DB
 
-  User.findById("5d692742618d9401994782c3", (err, user) => {
+  User.findById("5d6a854be6e391e9e4357e8b", (err, user) => {
     if (err) console.log(err);
     else {
       if (
-        search(req.params.friendID, user["USER_FRIENDS"]) === req.params.friendID
+        search(req.params.friendID, user["USER_FRIENDS"]) ===
+        req.params.friendID
       ) {
         next(new Error("FRIEND_ALREADY_EXISTS"));
       } else {
@@ -112,7 +113,7 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
             if (err) console.log(err);
             else {
               friend["USER_FRIENDS"].push({
-                friendID: "5d626b53fa8afa89b5f13ebd",
+                friendID: "5d6a854be6e391e9e4357e8b",
                 friendStatus: "Received"
               }); //update the document of the friend the request is being sent to
             }
@@ -139,102 +140,33 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
 //Bella L created 31/08/19 - Api that displays all the user's pending friend requests
 router.route("/pendingRequests").get((req, res) => {
   User.aggregate([
-      {
-        '$match': {
-          '_id': mongoose.Types.ObjectId('5d650a82d2c045ad621f44f4')
+    {
+      $match: { _id: mongoose.Types.ObjectId("5d651255e0029ab11191e793") }
+    },
+    {
+      $project: {
+        USER_FRIENDS: {
+          $filter: {
+            input: "$USER_FRIENDS",
+            as: "friend",
+            cond: { $eq: ["$$friend.friendStatus", "Received"] }
+          }
         }
-      }, {
-        '$lookup': {
-          'from': 'users', 
-          'localField': 'USER_FRIENDS.friendID', 
-          'foreignField': '_id', 
-          'as': 'pendingrequests'
-        }
-      },
-    
-    { $project: { 
-      "_id": 0,
-      "friends": "$pendingrequests"
-      // "firstname": "$pendingrequests.firstname",
-      // "lastname": "$pendingrequests.lastname"
-    }}
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "USER_FRIENDS.friendID",
+        foreignField: "_id",
+        as: "friends"
+      }
+    }
   ]).exec((err, friends) => {
     if (err) console.log(err);
     else res.json(friends);
   });
 });
-
- // {
-    //   "$match": { "_id": mongoose.Types.ObjectId(req.param.friendID) }
-    // },
-    // {
-    //   "$group": {
-    //     "_id": "$USER_FRIENDS.friendID",
-    //     "users": { "$addToSet": "$_id" }
-    //   }
-    // },
-    // {
-    //   "$match": {
-    //     "users": mongoose.Types.ObjectId(req.param.friendID) 
-    //   }
-    // }
-
-// {
-//   $lookup: {
-//     from: "users",
-//     let: {
-//       friendID: "$USER_FRIENDS.friendID",
-//       status: "$USER_FRIENDS.friendStatus"
-//     },
-//     pipeline: [
-//       {
-//         $match: {
-//           $expr: {
-//             $and: [
-//               { $eq: ["$friendID", "$_id"] },
-//               { $eq: ["$status", "Received"] }
-//             ]
-//           }
-//         }
-//       },
-//       { $project: { _id: 0}}
-//     ],
-//     as: "friendID"
-//   }
-// }
-
-//Use that userID to to find its JSON file in the DB
-
-//Finding user by their ID
-// User.findById("5d651255e0029ab11191e793", (err, user) => {
-//   if (err) console.log(err);
-//   else {
-//     res.json(
-//       user.aggregate([ //aggregate user object
-//         {
-//           $lookup: {
-//             from: "users", //lookup on users collection
-//             let: { friendID: "$USER_FRIENDS.friendID", status: "$USER_FRIENDS.friendStatus"}, //assigning friendID and status to their values
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $and: [ //Where the WHERE starts
-//                       { $eq: ["$friendID", "$_id"] }, //friendIDs in user object equal to _id in the collection
-//                       { $eq: ["$status", "$Received"] } //status in user object equal to Received
-//                     ]
-//                   }
-//                 }
-//               },
-//               { $project: { _id: 0}}
-//             ],
-//             as: "friendID" //output array
-//           }
-//         }
-//       ])
-//     );
-//   }
-// });
 
 //Default Error-Handler:
 app.use(function(error, req, res, next) {
