@@ -22,6 +22,9 @@ let User = new Schema({
   phoneNumber: { 
     type: String
   },
+  phoneNumber: {
+    type: String
+  },
   password: {
     type: String
   },
@@ -29,8 +32,11 @@ let User = new Schema({
     friendID: Schema.Types.ObjectId,  
     friendStatus: String,
     _id: false
-  }] 
+  }], 
       
+  preference: {
+    type: String
+  }
 });
 
 export default mongoose.model("User", User);
