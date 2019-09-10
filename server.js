@@ -25,9 +25,9 @@ app.use('/api', userRouter);
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
 
-const connection = mongoose.connection; //creating an object out of that connection 
+const connection = mongoose.connection; //creating an object out of that connection
 
-//testing to see if the connection is successful 
+//testing to see if the connection is successful
 connection.once("open", () => {
   console.log("Connection to MongoDB established successfully");
   testconnection = true;
