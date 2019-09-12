@@ -70,44 +70,61 @@ router.route("/gmapi").get((req, res) => {
   res.json([process.env.GMAPI]);
 });
 
-//Friend APIS - Bella L
+//Friend Routes and Functions - created by Bella L
 
-function search(id, array) {
+//Searchs for an existing friend ID, if found returns that ID
+function searchID(id, array) {
   for (var i = 0; i < array.length; i++) {
     if (array[i]["friendID"] == id) {
       return id;
     }
   }
 }
+  
+  //Returns an array containing a user's friends and their ID(s)
+function getFriendIDs(oldArr, newArr) {
+  for (var i = 0; i < oldArr.length; i++) {
+    newArr.push(oldArr[i]["friendID"]);
+  }
+  return newArr;
+}
 
-//Updates 2 user documents in the DB with the sent friend request
+//Updates the friendStatus property of the specified id
+function updateFriendStatus(friendid, array, status) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i]["friendID"] == friendid) {
+      array[i]["friendStatus"] = status;
+    }
+  }
+}
+
+
+//Route that creates a 'friend' relationship between 2 users based on the data sent in the friend request
 router.route("/friendRequest/:friendID").post((req, res, next) => {
-  //Hardcoding the userID for testing purposes because login feature is not established - please replace with req.session._id
-  //Use that userID to to find its JSON file in the DB
-
+  
   User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
     if (err) console.log(err);
     else {
       if (
-        search(req.params.friendID, user["USER_FRIENDS"]) ===
+        searchID(req.params.friendID, user["friends"]) ===
         req.params.friendID
       ) {
         next(new Error("FRIEND_ALREADY_EXISTS"));
       } else {
-        user["USER_FRIENDS"].push({
+        user["friends"].push({
           friendID: req.params.friendID,
           friendStatus: "Sent"
-        }); //update the document of the user in session
+        }); 
 
         user.save((err, user) => {
           if (err) next(err);
           User.findById(req.params.friendID, (err, friend) => {
             if (err) console.log(err);
             else {
-              friend["USER_FRIENDS"].push({
+              friend["friends"].push({
                 friendID: "5d6a819446f3f4e9240a5258",
                 friendStatus: "Received"
-              }); //update the document of the friend the request is being sent to
+              }); 
             }
             friend.save((err, friend) => {
               if (err) next(err);
@@ -120,7 +137,7 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
   });
 });
 
-//Bella L created 31/08/19 - Api that displays all the user's pending friend requests
+//Route that retrieves all of a user's current friends from the database
 router.route("/currentFriends").get((req, res) => {
   User.aggregate([
     {
@@ -128,9 +145,10 @@ router.route("/currentFriends").get((req, res) => {
     },
     {
       $project: {
-        USER_FRIENDS: {
+        _id: 0,
+        friends: {
           $filter: {
-            input: "$USER_FRIENDS",
+            input: "$friends",
             as: "friend",
             cond: { $eq: ["$$friend.friendStatus", "Accepted"] }
           }
@@ -140,7 +158,7 @@ router.route("/currentFriends").get((req, res) => {
     {
       $lookup: {
         from: "users",
-        localField: "USER_FRIENDS.friendID",
+        localField: "friends.friendID",
         foreignField: "_id",
         as: "friends"
       }
@@ -151,20 +169,14 @@ router.route("/currentFriends").get((req, res) => {
   });
 });
 
-function getFriendIDs(oldArr, newArr) {
-  for (var i = 0; i < oldArr.length; i++) {
-    newArr.push(oldArr[i]["friendID"]);
-  }
-  return newArr;
-}
-
+//Route that retrieves 'suggested friends' from the database
 router.route("/suggestedFriends").get((req, res) => {
   let newArr = [];
   let usedArr = [];
   User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
     if (err) console.log(err);
     else {
-      let usedArr = getFriendIDs(user["USER_FRIENDS"], newArr);
+      let usedArr = getFriendIDs(user["friends"], newArr);
       usedArr.push("5d6a819446f3f4e9240a5258");
       User.find(
         {
@@ -186,6 +198,7 @@ router.route("/suggestedFriends").get((req, res) => {
   });
 });
 
+//Route that retrieves the user's pending friend requests from the database
 router.route("/pendingRequests").get((req, res) => {
   User.aggregate([
     {
@@ -193,9 +206,9 @@ router.route("/pendingRequests").get((req, res) => {
     },
     {
       $project: {
-        USER_FRIENDS: {
+        friends: {
           $filter: {
-            input: "$USER_FRIENDS",
+            input: "$friends",
             as: "friend",
             cond: { $eq: ["$$friend.friendStatus", "Received"] }
           }
@@ -205,7 +218,7 @@ router.route("/pendingRequests").get((req, res) => {
     {
       $lookup: {
         from: "users",
-        localField: "USER_FRIENDS.friendID",
+        localField: "friends.friendID",
         foreignField: "_id",
         as: "friends"
       }
@@ -216,24 +229,16 @@ router.route("/pendingRequests").get((req, res) => {
   });
 });
 
-function updateFriendStatus(friendid, array, status) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i]["friendID"] == friendid) {
-      array[i]["friendStatus"] = status;
-    }
-  }
-}
 
+//Route that updates the status of the 'friend' relationship between 2 users in the database
 router.route("/friendStatusUpdate/:friendID").put((req, res, next) => {
-  //Hardcoding the userID for testing purposes because login feature is not established - please replace with req.session._id
-  //Use that userID to to find its JSON file in the DB
 
   User.findById("5d6a844cc0f026e9cba26c4c", (err, user) => {
     if (err) console.log(err);
     else {
       updateFriendStatus(
         req.params.friendID,
-        user["USER_FRIENDS"],
+        user["friends"],
         req.body.friendStatus
       );
     }
@@ -244,18 +249,57 @@ router.route("/friendStatusUpdate/:friendID").put((req, res, next) => {
         else {
           updateFriendStatus(
             "5d6a844cc0f026e9cba26c4c",
-            friend["USER_FRIENDS"],
+            friend["friends"],
             req.body.friendStatus
           );
         }
         friend.save((err, friend) => {
           if (err) next(err);
-          res.json(user);
+          res.json(202);
         });
       });
     });
   });
 });
+
+function deleteFriend(arr, friendID) { 
+
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i]["friendID"] == friendID) {
+      
+      arr.splice(i,1);
+
+}
+  }
+}
+
+router.route("/friendRemoval/:friendID").put((req, res, next) => {
+
+  User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
+    if (err) console.log(err);
+    else {
+      deleteFriend(user["friends"],        
+      req.params.friendID);
+    }
+    user.save((err, user) => {
+      if (err) next(err);
+      User.findById(req.params.friendID, (err, friend) => {
+        if (err) console.log(err);
+        else {
+          deleteFriend(friend["friends"],
+            "5d6a819446f3f4e9240a5258",
+          );
+        }
+        friend.save((err, friend) => {
+          if (err) next(err);
+          res.status(204);
+        });
+      });
+    });
+  });
+});
+
+
 
 //Default Error-Handler:
 app.use(function(error, req, res, next) {

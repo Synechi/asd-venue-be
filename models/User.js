@@ -25,7 +25,7 @@ let User = new Schema({
   password: {
     type: String
   },
-  USER_FRIENDS: [{
+  friends: [{
     friendID: Schema.Types.ObjectId,  
     friendStatus: String,
     _id: false
