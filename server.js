@@ -162,7 +162,14 @@ router.route("/currentFriends").get((req, res) => {
         foreignField: "_id",
         as: "friends"
       }
-    }
+    },
+    {$unwind: { path: '$friends' }},
+    {$project: {
+      _id: "$friends._id",
+      firstname: "$friends.firstname",
+      lastname: "$friends.lastname"
+    }}
+    
   ]).exec((err, friends) => {
     if (err) console.log(err);
     else res.json(friends);
@@ -176,7 +183,7 @@ router.route("/suggestedFriends").get((req, res) => {
   User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
     if (err) console.log(err);
     else {
-      let usedArr = getFriendIDs(user["friends"], newArr);
+      usedArr = getFriendIDs(user["friends"], newArr);
       usedArr.push("5d6a819446f3f4e9240a5258");
       User.find(
         {
@@ -222,7 +229,13 @@ router.route("/pendingRequests").get((req, res) => {
         foreignField: "_id",
         as: "friends"
       }
-    }
+    },
+    {$unwind: { path: '$friends' }},
+    {$project: {
+      _id: "$friends._id",
+      firstname: "$friends.firstname",
+      lastname: "$friends.lastname"
+    }}
   ]).exec((err, friends) => {
     if (err) console.log(err);
     else res.json(friends);
