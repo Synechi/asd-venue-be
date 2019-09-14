@@ -8,7 +8,12 @@ let Venuelist = new Schema({
   },
   colour: {
     type: String
-  }
+  },
+  venues: [
+    {
+      placeID: String
+    }
+  ]
 });
 
 export default mongoose.model("Venuelist", Venuelist);
