@@ -40,7 +40,7 @@ router.route("/friendRequest/:friendID").post((req, res, next) => {
             }
             friend.save((err, friend) => {
               if (err) next(err);
-              res.json(user);
+              res.status(204);
             });
           });
         });
