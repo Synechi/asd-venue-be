@@ -29,8 +29,8 @@ router.route("/suggestedFriends/:searchBox").get((req, res) => {
             $nin: usedArr //Excludes current friends
           },
           $or: [
-            { firstname: { $regex: new RegExp(input, "i") } },
-            { lastname: { $regex: new RegExp(input, "i") } } //Matches the user search input with the first or last names of all the users in the database 
+            { firstname: { $regex: new RegExp(input, "i"), $options: "x" } },
+            { lastname: { $regex: new RegExp(input, "i"), $options: "x" } } //Matches the user search input with the first or last names of all the users in the database 
           ] 
         },
         (err, users) => {
