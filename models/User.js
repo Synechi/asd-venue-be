@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import { userInfo } from "os";
+import Venuelists from "./Venuelists";
 
 const Schema = mongoose.Schema;
 
 let User = new Schema({
-  
   firstname: {
     type: String
   },
@@ -17,13 +16,7 @@ let User = new Schema({
   password: {
     type: String
   },
-  venuelists: [{
-    name: String,
-    colour: String
-  }]
+  venuelists: [Venuelists.schema]
 });
 
 export default mongoose.model("User", User);
-
-
-
