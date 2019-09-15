@@ -15,6 +15,10 @@ const app = express(); //making a simple express app
 const port = process.env.PORT; //assigning a port (Heroku assigns its own port)
 const router = express.Router(); //creates a router object that is of the router function
 dotenv.config(); //allows us to use the .env file when developing code
+// const userRouter = express.Router();
+dotenv.config(); //allows us to use the .env file when developing code
+//const User = require('./models/User');
+const userRouter = require("./routes/userRouter")(User);
 
 // Debugging
 
@@ -36,6 +40,10 @@ app.use("/pendingRequests", pendingRequestsRouter);
 app.use("/friendStatusUpdate", friendStatusUpdateRouter);
 app.use("/friendRemoval", friendRemovalRouter);
 app.use("/venuelist", venueListRouter);
+//VenueFlag Route
+var venueFlagRouter = require("./routes/venueFlag");
+app.use("/venueFlag", venueFlagRouter);
+app.use("/api", userRouter);
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
 
@@ -57,19 +65,32 @@ router.route("/user/:id").get((req, res) => {
 
 router.route("/user").post((req, res) => {
   console.dir(req.body.lastname);
+  const MyModel = new User();
+  // MyModel.find({ email: req.body.email }, null, function (err, docs) {});
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
-    password: req.body.password
+    phoneNumber: req.body.phoneNumber,
+    password: req.body.password,
+    preference: req.body.preference
   });
+
+  //   user.model.count({email: req.body.email}, function (err, count){
+  //     if(count>0){
+  //       console.log("hellofjkdshfs");
+  //     }
+  // });
 
   user.save().then(result => {
     console.log(result);
   });
+  res.send({ body: "Account has been created" });
 
-  res.send("{'hello: 'hi'}");
+  // res.send(
+  //   "{'hello: 'hi'}"
+  // );
   // console.log(req.body);
 });
 
@@ -92,6 +113,11 @@ app.use(function(error, req, res, next) {
 app.get("/", (req, res) => res.send("Is db connected? - " + testconnection));
 
 app.use("/", router);
+// app.use("/", router);
+app.use("/", userRouter);
+
+// //LoginRouter
+// app.use("/", loginRouter);
 
 app.listen(port || 4000, () =>
   console.log("Express sever running on port " + port)
