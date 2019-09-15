@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 router.route("/currentFriends").get((req, res) => {
     User.aggregate([
       {
-        $match: { _id: mongoose.Types.ObjectId("5d6a819446f3f4e9240a5258") }
+        $match: { _id: mongoose.Types.ObjectId(req.session._id) }
       },
       {
         $project: {

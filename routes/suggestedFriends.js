@@ -18,11 +18,11 @@ router.route("/suggestedFriends/:searchBox").get((req, res) => {
   let usedArr = [];
   var input = req.params.searchBox;
 
-  User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
+  User.findById(req.session._id, (err, user) => {
     if (err) console.log(err);
     else {
       usedArr = getFriendIDs(user["friends"], newArr);
-      usedArr.push("5d6a819446f3f4e9240a5258");
+      usedArr.push(req.session._id);
       User.find(
         {
           _id: {
