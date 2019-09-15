@@ -16,7 +16,7 @@ function updateFriendStatus(friendid, array, status) {
   //PUT - Updates the friendStatus property for 2 users
   router.route("/friendStatusUpdate/:friendID").put((req, res, next) => {
   
-    User.findById(req.session._id, (err, user) => {
+    User.findById("5d6a844cc0f026e9cba26c4c", (err, user) => {
       if (err) console.log(err);
       else {
         updateFriendStatus(
@@ -31,7 +31,7 @@ function updateFriendStatus(friendid, array, status) {
           if (err) console.log(err);
           else {
             updateFriendStatus(
-              req.session._id,
+              "5d6a844cc0f026e9cba26c4c",
               friend["friends"],
               req.body.friendStatus
             );

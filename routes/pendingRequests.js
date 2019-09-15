@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 router.route("/pendingRequests").get((req, res) => {
     User.aggregate([
       {
-        $match: { _id: mongoose.Types.ObjectId(req.session._id) }
+        $match: { _id: mongoose.Types.ObjectId("5d6a844cc0f026e9cba26c4c") }
       },
       {
         $project: {

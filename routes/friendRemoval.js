@@ -14,7 +14,7 @@ function deleteFriend(arr, friendID) {
 
 //PUT - Deletes the friend object from the user 'friends' array 
 router.route("/friendRemoval/:friendID").put((req, res, next) => {
-  User.findById(req.session._id, (err, user) => {
+  User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
     if (err) console.log(err);
     else {
       deleteFriend(user["friends"], req.params.friendID);
@@ -24,7 +24,7 @@ router.route("/friendRemoval/:friendID").put((req, res, next) => {
       User.findById(req.params.friendID, (err, friend) => {
         if (err) console.log(err);
         else {
-          deleteFriend(friend["friends"], req.seesion._id);
+          deleteFriend(friend["friends"], "5d6a819446f3f4e9240a5258");
         }
         friend.save((err, friend) => {
           if (err) next(err);
