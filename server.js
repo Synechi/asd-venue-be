@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import User from "./models/User"; //pulling the schema for the structure of how a collection is supposed to be displayed, pulling the schema from mongoose and then creating the schema for users
+import { stringify } from "querystring";
+import { parse } from "path";
 
 //Routes
 import venueListRouter from "./routes/venuelist";
@@ -18,12 +20,24 @@ dotenv.config(); //allows us to use the .env file when developing code
 
 let testconnection = false;
 
+var suggestedFriendsRouter = require("./routes/suggestedFriends");
+var friendRequestRouter = require("./routes/friendRequest");
+var currentFriendsRouter = require("./routes/currentFriends");
+var pendingRequestsRouter = require("./routes/pendingRequests");
+var friendStatusUpdateRouter = require("./routes/friendStatusUpdate");
+var friendRemovalRouter = require("./routes/friendRemoval");
+
 app.use(cors()); //establishing the connecting with an external server database
 app.use(bodyParser.json()); //same as above but for passing json through
+app.use("/suggestedFriends", suggestedFriendsRouter);
+app.use("/friendRequest", friendRequestRouter);
+app.use("/currentFriends", currentFriendsRouter);
+app.use("/pendingRequests", pendingRequestsRouter);
+app.use("/friendStatusUpdate", friendStatusUpdateRouter);
+app.use("/friendRemoval", friendRemovalRouter);
+app.use("/venuelist", venueListRouter);
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
-
-app.use("/venuelist", venueListRouter);
 
 const connection = mongoose.connection; //creating an object out of that connection
 
@@ -50,9 +64,11 @@ router.route("/user").post((req, res) => {
     email: req.body.email,
     password: req.body.password
   });
+
   user.save().then(result => {
     console.log(result);
   });
+
   res.send("{'hello: 'hi'}");
   // console.log(req.body);
 });
@@ -65,9 +81,9 @@ router.route("/user").get((req, res) => {
   });
 });
 
-//Google maps API Route
-router.route("/gmapi").get((req, res) => {
-  res.json([process.env.GMAPI]);
+//Default Error-Handler:
+app.use(function(error, req, res, next) {
+  res.json({ message: error.message });
 });
 
 //creating a route for the backend that will pass through the json data for what you are querying
@@ -80,23 +96,3 @@ app.use("/", router);
 app.listen(port || 4000, () =>
   console.log("Express sever running on port " + port)
 );
-
-// //create route for returning all venue lists
-// router.route("/venuelist").get((req, res) => {
-//   venuelist.find((err, venuelists) => {
-//     if (err) console.log(err);
-//     else res.json(venuelists);
-//   });
-// });
-
-// //creating a route for creating a new list
-// app.post("/venuelist/", (req, res) => {
-//   var myData = new venuelist(req.body);
-//   myData.save()
-//   .then(item => {
-//   res.send("List created and saved");
-//   })
-//   .catch(err => {
-//   res.status(400).send("unable to save to database");
-//   });
-//  });

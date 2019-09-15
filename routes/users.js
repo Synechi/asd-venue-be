@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import User from "./models/User"; //pulling the schema for the structure of how a collection is supposed to be displayed, pulling the schema from mongoose and then creating the schema for users
+import UserService from '../services/users';
 
 const app = express(); //making a simple express app
 const port = process.env.PORT; //assigning a port (Heroku assigns its own port)
