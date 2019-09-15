@@ -16,7 +16,7 @@ let User = new Schema({
   lastname: {
     type: String
   },
-  emailAddress: {
+  email: {
     type: String
   },
   phoneNumber: {

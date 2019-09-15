@@ -21,18 +21,18 @@ function routes(User) {
       }
       User.findOne(query1, (err, users) => {
         if (err) {
-          console.dir("hellogcgfsd");
+          // console.dir("hello");
           return res.status(404).send(err);
         }
         else if (users && users._id) {
-         console.log("eeeee");
+        //  console.log("eeeee");
           var status = {
             "UserID" : users._id
           };
           return res.status(200).send(status)
         }
         else {
-          console.log("rrrrrr");
+          // console.log("rrrrrr");
           var status = {
             "Status" : "Incorrect email and/or password"
           };
@@ -42,20 +42,17 @@ function routes(User) {
     });
     userRouter.route("/user").post((req, res) => {
         const user = new User(req.body);
-        console.dir(req.body.firstname);
         const query = {};
-        console.dir(req.body);
         query.email = user.email;
-        console.dir(query);
 
         User.findOne(query, (err, users) => {
-          console.log(users);
+          // console.log(users);
           if (err) {
-            console.dir("hellogcgfsd");
+            // console.dir("hellogcgfsd");
             return res.status(404).send(err);
           }
           else if (users && users._id) {
-            console.log(users.email);
+            // console.log(users.email);
             var status = {
               "Status" : "Email Address already exists"
             };
@@ -72,7 +69,7 @@ function routes(User) {
               password: req.body.password
             });
             user1.save().then(result => {
-              console.log(result);
+              // console.log(result);
             });
             var status = {
               "UserID" : user1._id
