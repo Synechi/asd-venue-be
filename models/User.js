@@ -28,15 +28,12 @@ let User = new Schema({
   password: {
     type: String
   },
-  USER_FRIENDS: [{
-    friendID: Schema.Types.ObjectId,  
-    friendStatus: String,
-    _id: false
-  }], 
-      
-  preference: {
-    type: String
-  }
+  
+  flaggedvenues: [{
+    venueName: String, 
+    flag: String, 
+  }]
+
 });
 
 export default mongoose.model("User", User);

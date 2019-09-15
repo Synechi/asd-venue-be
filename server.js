@@ -24,6 +24,9 @@ let testconnection = false;
 
 app.use(cors()); //establishing the connecting with an external server database
 app.use(bodyParser.json()); //same as above but for passing json through
+//VenueFlag Route
+var venueFlagRouter = require("./routes/venueFlag");
+app.use('/venueFlag', venueFlagRouter);
 app.use('/api', userRouter);
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
