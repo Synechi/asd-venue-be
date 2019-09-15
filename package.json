@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel server.js -d dist && babel models -d dist/models",
-    "start": "npm run build && node ./dist/server.js",
+    "build": "babel server.js -d dist && babel models -d dist/models && babel routes -d dist/routes",
+    "start": "npm run build && babel-node ./dist/server.js",
     "dev": "nodemon --exec babel-node server.js "
   },
   "author": "",
@@ -20,6 +20,7 @@
     "nodemon": "^1.19.1"
   },
   "dependencies": {
+    "core-js": "^3.2.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
