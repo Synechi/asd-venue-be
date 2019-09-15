@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel server.js -d dist && babel models -d dist/models && babel routes -d dist/routes",
-    "start": "npm run build && node ./dist/server.js",
+    "start": "npm run build && babel-node ./dist/server.js",
     "dev": "nodemon --exec babel-node server.js "
   },
   "author": "",
