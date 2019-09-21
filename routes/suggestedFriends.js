@@ -17,7 +17,6 @@ router.route("/suggestedFriends/:searchBox/:id").get((req, res) => {
   let newArr = [];
   let usedArr = [];
   let input = req.params.searchBox;
-  let pattern = new RegExp(input)
 
   User.findById(req.params.id, (err, user) => {
     if (err) console.log(err);
