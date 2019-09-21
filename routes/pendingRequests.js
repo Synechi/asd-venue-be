@@ -6,10 +6,10 @@ import User from "../models/User";
 import mongoose from "mongoose";
 
 //GET a user's pending friend requests from the database
-router.route("/pendingRequests").get((req, res) => {
+router.route("/pendingRequests/:id").get((req, res) => {
     User.aggregate([
       {
-        $match: { _id: mongoose.Types.ObjectId("5d6a844cc0f026e9cba26c4c") }
+        $match: { _id: mongoose.Types.ObjectId(req.params.id) }
       },
       {
         $project: {

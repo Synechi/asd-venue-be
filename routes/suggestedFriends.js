@@ -13,24 +13,25 @@ function getFriendIDs(oldArr, newArr) {
 }
 
 //GET 'suggested friends' based on search input from the database
-router.route("/suggestedFriends/:searchBox").get((req, res) => {
+router.route("/suggestedFriends/:searchBox/:id").get((req, res) => {
   let newArr = [];
   let usedArr = [];
-  var input = req.params.searchBox;
+  let input = req.params.searchBox;
+  let pattern = new RegExp(input)
 
-  User.findById("5d6a819446f3f4e9240a5258", (err, user) => {
+  User.findById(req.params.id, (err, user) => {
     if (err) console.log(err);
     else {
       usedArr = getFriendIDs(user["friends"], newArr);
-      usedArr.push("5d6a819446f3f4e9240a5258");
+      usedArr.push(req.params.id);
       User.find(
         {
           _id: {
             $nin: usedArr //Excludes current friends
           },
           $or: [
-            { firstname: { $regex: new RegExp(input, "i"), $options: "x" } },
-            { lastname: { $regex: new RegExp(input, "i"), $options: "x" } } //Matches the user search input with the first or last names of all the users in the database
+            { firstname: { $regex: input , $options: 'xi' } },
+            { lastname: { $regex: input , $options: 'xi' } } //Matches the user search input with the first or last names of all the users in the database
           ]
         },
         (err, users) => {

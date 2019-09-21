@@ -6,10 +6,10 @@ import User from "../models/User";
 import mongoose from "mongoose";
 
 //GET a user's current friends from the database
-router.route("/currentFriends").get((req, res) => {
+router.route("/currentFriends/:id").get((req, res) => {
     User.aggregate([
       {
-        $match: { _id: mongoose.Types.ObjectId("5d6a819446f3f4e9240a5258") }
+        $match: { _id: mongoose.Types.ObjectId(req.params.id) }
       },
       {
         $project: {
