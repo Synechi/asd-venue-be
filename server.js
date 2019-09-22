@@ -27,8 +27,10 @@ var currentFriendsRouter = require("./routes/currentFriends");
 var pendingRequestsRouter = require("./routes/pendingRequests");
 var friendStatusUpdateRouter = require("./routes/friendStatusUpdate");
 var friendRemovalRouter = require("./routes/friendRemoval");
+// var reviewsRouter = require("./routes/reviews")
 
 const userRouter = require('./routes/userRouter')(User);
+const reviews = require('./routes/reviews');
 
 app.use(cors()); //establishing the connecting with an external server database
 app.use(bodyParser.json()); //same as above but for passing json through
@@ -43,6 +45,7 @@ app.use("/venuelist", venueListRouter);
 var venueFlagRouter = require("./routes/venueFlag");
 app.use("/venueFlag", venueFlagRouter);
 app.use("/api", userRouter);
+// app.use("/reviews", reviewsRouter);
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
 
