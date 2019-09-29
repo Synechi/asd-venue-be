@@ -43,7 +43,8 @@ let User = new Schema({
       reviewDescription: String,
       ratings: String,
       thumbsUp: Boolean,
-      placeID: String
+      placeID: String,
+      date: String
     }
   ]
 });

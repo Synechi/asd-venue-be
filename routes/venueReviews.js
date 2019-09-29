@@ -73,7 +73,13 @@ router.route("/getfriendreviews/:id/:placeID").get((req, res) => {
                     if (err) res.status(500).send(err);
                     for (let venue in friend.flaggedvenues) {
                         if (friend.flaggedvenues[venue].placeID === req.params.placeID) {
-                            list.push(friend.flaggedvenues[venue])
+                            let response = {
+                                firstname: friend.firstname,
+                                venueName: friend.flaggedvenues[venue].venueName,
+                                reviewDescription: friend.flaggedvenues[venue].reviewDescription,
+                                placeID: friend.flaggedvenues[venue].placeID
+                            }
+                            list.push(response)
 
                         }
                     }
