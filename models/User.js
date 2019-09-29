@@ -48,6 +48,8 @@ let User = new Schema({
   ]
 });
 
+
+
 // Password Encryption:
 
 // Schema.methods.setPassword = function(password) {
