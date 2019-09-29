@@ -1,7 +1,7 @@
-var express = require("express");
-var router = express.Router();
+import express from "express";
 import User from "../models/User";
-import mongoose from "mongoose";
+
+var router = express.Router();
 
 
 router.route("/addReview").post((req, res) => {
@@ -15,23 +15,23 @@ router.route("/addReview").post((req, res) => {
         else if (user && user._id) {
             if (review.thumbsUp) {
                 user["flaggedvenues"].push({
-                reviewDescription: review.reviewDescription,
-                ratings: review.ratings,
-                thumbsUp: review.thumbsUp
+                    reviewDescription: review.reviewDescription,
+                    ratings: review.ratings,
+                    thumbsUp: review.thumbsUp
                 });
             }
             else if (review.thumbsDown) {
                 user["flaggedvenues"].push({
-                reviewDescription: review.reviewDescription,
-                ratings: review.ratings,
-                thumbsDown: review.thumbsDown
+                    reviewDescription: review.reviewDescription,
+                    ratings: review.ratings,
+                    thumbsUp: review.thumbsUp
                 });
             }
 
             else {
                 user["flaggedvenues"].push({
-                reviewDescription: review.reviewDescription,
-                ratings: review.ratings
+                    reviewDescription: review.reviewDescription,
+                    ratings: review.ratings
                 });
             }
 
@@ -39,27 +39,55 @@ router.route("/addReview").post((req, res) => {
                 if (err) {
                     // console.log("Review has not been created");
                     var status = {
-                        "Status" : "Review has not been created"
+                        "Status": "Review has not been created"
                     };
                     return res.status(404).send(status);
                 }
                 else {
                     var status = {
-                        "Status" : "Review has been created"
+                        "Status": "Review has been created"
                     };
                     return res.status(201).send(status);
                 }
 
-              });
+            });
         }
         else {
             console.log(user)
             var status = {
-                "Status" : "Not found"
+                "Status": "Not found"
             };
             return res.status(404).send(status);
         }
     });
-  });
+});
 
-  module.exports = router;
+router.route("/getfriendreviews/:id/:placeID").get((req, res) => {
+    let list = [];
+    User.findById(req.params.id, (err, user) => {
+        if (err) res.status(500).send(err);
+        for (let friend in user.friends) {
+
+            if (user.friends[friend].friendStatus === "Accepted") {
+                User.findById(user.friends[friend].friendID, (err, friend) => {
+                    if (err) res.status(500).send(err);
+                    for (let venue in friend.flaggedvenues) {
+                        if (friend.flaggedvenues[venue].placeID === req.params.placeID) {
+                            list.push(friend.flaggedvenues[venue])
+
+                        }
+                    }
+                    return res.status(201).send(list)
+                })
+            }
+
+        }
+
+    })
+
+
+})
+
+
+
+module.exports = router;
