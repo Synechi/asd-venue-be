@@ -22,9 +22,6 @@ let User = new Schema({
   phoneNumber: {
     type: String
   },
-  phoneNumber: {
-    type: String
-  },
   password: {
     type: String
   },

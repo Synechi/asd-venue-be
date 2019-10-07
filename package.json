@@ -4,7 +4,7 @@
   "description": "Advanced Software Dev - Venue Project Backend",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require @babel/register --recursive --exit",
     "build": "babel server.js -d dist && babel models -d dist/models && babel routes -d dist/routes",
     "start": "npm run build && babel-node ./dist/server.js",
     "dev": "nodemon --exec babel-node server.js "
@@ -20,6 +20,7 @@
     "nodemon": "^1.19.1"
   },
   "dependencies": {
+    "@babel/register": "^7.6.2",
     "core-js": "^3.2.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
