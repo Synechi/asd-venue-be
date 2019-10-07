@@ -36,9 +36,27 @@ let User = new Schema({
   flaggedvenues: [
     {
       venueName: String,
-      flag: String
+      flag: String,
+      reviewDescription: String,
+      ratings: String,
+      thumbsUp: Boolean,
+      placeID: String,
+      date: String
     }
   ]
 });
+
+
+
+// Password Encryption:
+
+// Schema.methods.setPassword = function(password) {
+//   //Create unique salt
+//   this.salt = crypto.randomBytes(16).toString("hex");
+//   //Hasing salt and password with 1000 itr
+//   this.hash = crypto
+//     .pbkdf2Sync(password, this.salt, 1000, 64, "sha512")
+//     .toString("hex");
+// };
 
 export default mongoose.model("User", User);

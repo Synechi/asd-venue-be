@@ -10,6 +10,7 @@ import { parse } from "path";
 
 //Routes
 import venueListRouter from "./routes/venuelist";
+import venueReviewsRouter from "./routes/venueReviews";
 
 const app = express(); //making a simple express app
 const port = process.env.PORT; //assigning a port (Heroku assigns its own port)
@@ -27,10 +28,7 @@ var currentFriendsRouter = require("./routes/currentFriends");
 var pendingRequestsRouter = require("./routes/pendingRequests");
 var friendStatusUpdateRouter = require("./routes/friendStatusUpdate");
 var friendRemovalRouter = require("./routes/friendRemoval");
-// var reviewsRouter = require("./routes/reviews")
-
 const userRouter = require('./routes/userRouter')(User);
-const reviews = require('./routes/reviews');
 
 app.use(cors()); //establishing the connecting with an external server database
 app.use(bodyParser.json()); //same as above but for passing json through
@@ -41,11 +39,14 @@ app.use("/pendingRequests", pendingRequestsRouter);
 app.use("/friendStatusUpdate", friendStatusUpdateRouter);
 app.use("/friendRemoval", friendRemovalRouter);
 app.use("/venuelist", venueListRouter);
+// app.use("/venueReviews", venueReviewsRouter);
+app.use("/reviews", venueReviewsRouter);
 //VenueFlag Route
 var venueFlagRouter = require("./routes/venueFlag");
 app.use("/venueFlag", venueFlagRouter);
 app.use("/api", userRouter);
-// app.use("/reviews", reviewsRouter);
+// app.use("/venueReviews", reviewsRouter);
+// app.use("/user", reviewsRouter);
 
 mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
 
@@ -58,7 +59,7 @@ connection.once("open", () => {
 });
 
 //Default Error-Handler:
-app.use(function(error, req, res, next) {
+app.use(function (error, req, res, next) {
   res.json({ message: error.message });
 });
 
