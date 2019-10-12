@@ -3,36 +3,42 @@ var router = express.Router();
 import User from "../models/User";
 import mongoose from "mongoose";
 
-
+//Add Review
 router.route("/addReview").post((req, res) => {
     var review = JSON.parse(JSON.stringify(req.body));
     console.log(review);
 
-    User.findById(review.id, (err, user) => {
+    console.log(review.rating);
+
+    User.findById(review._userid, (err, user) => {
         if (err) {
             console.log(err);
         }
         else if (user && user._id) {
-            if (review.thumbsUp) {
+            if (review.thumbsUpDown == "thumbsUp") {
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
-                ratings: review.ratings,
-                thumbsUp: review.thumbsUp
+                rating: review.rating,
+                // thumbsUp: review.thumbsUp
+                thumbsUp: true
                 });
             }
-            else if (review.thumbsDown) {
+            else if (review.thumbsUpDown == "thumbsDown") {
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
-                ratings: review.ratings,
-                thumbsDown: review.thumbsDown
+                rating: review.rating,
+                // thumbsDown: review.thumbsDown
+                thumbsDown: true
                 });
             }
 
             else {
+                console.log("hellollllo");
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
-                ratings: review.ratings
+                rating: review.rating
                 });
+                
             }
 
             user.save((err, user1) => {
