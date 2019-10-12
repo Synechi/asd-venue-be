@@ -39,7 +39,7 @@ let User = new Schema({
   flaggedvenues: [
     {
       venueName: String,
-      flag: String
+      venueFlag: String
     }
   ]
 });
