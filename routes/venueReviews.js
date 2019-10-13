@@ -109,7 +109,7 @@ router.route("/getfriendreviews/:id/:placeID").get((req, res) => {
 
 })
 
-router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
+router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
     User.findById(req.params.friendid, (err, user) => {
 
         if (err) res.status(500).send(err);
