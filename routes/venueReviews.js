@@ -117,8 +117,9 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
             res.status(500).send("null")
         } else {
             console.log(user.flaggedvenues)
+            let reviewFlag = false;
             for (let reviews in user.flaggedvenues) {
-
+                reviewFlag = true;
                 if (user.flaggedvenues[reviews]._id == req.params.reviewid) {
                     let arr = new Array();
                     let flag = false;
@@ -208,13 +209,15 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
 
 
 
-                } else {
-                    res.status(201).send({
-                        id1: user.flaggedvenues[reviews]._id,
-                        id2: req.params.reviewid,
-                        message: "No matching review"
-                    })
                 }
+            }
+            if (reviewFlag == false) {
+                res.status(201).send({
+                    id1: user.flaggedvenues[reviews]._id,
+                    id2: req.params.reviewid,
+                    message: "No matching review"
+                })
+
             }
         }
 
