@@ -116,7 +116,9 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
         if (user === null) {
             res.status(500).send("null")
         } else {
+            console.log(user.flaggedvenues)
             for (let reviews in user.flaggedvenues) {
+
                 if (user.flaggedvenues[reviews]._id == req.params.reviewid) {
                     let arr = new Array();
                     let flag = false;
