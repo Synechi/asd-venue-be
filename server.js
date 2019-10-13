@@ -40,7 +40,7 @@ app.use("/pendingRequests", pendingRequestsRouter);
 app.use("/friendStatusUpdate", friendStatusUpdateRouter);
 app.use("/friendRemoval", friendRemovalRouter);
 app.use("/venuelist", venueListRouter);
-// app.use("/venueReviews", venueReviewsRouter);
+app.use("/venueReviews", venueReviewsRouter);
 app.use("/reviews", venueReviewsRouter);
 //VenueFlag Route
 var venueFlagRouter = require("./routes/venueFlag");

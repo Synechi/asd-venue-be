@@ -48,15 +48,22 @@ let User = new Schema({
       thumbsUp: Boolean,
       placeID: String,
       date: String,
-      venueFlag: String
+      venueFlag: String,
+      score: Number,
+      userRated: [
+        {
+          userRating: Number,
+          userID: String
+        }
+      ]
     }
   ]
 });
 
 // Password Encryption:
 
-User.methods.setPassword = function(password) { 
-// Schema.methods.setPassword = function(password) {
+User.methods.setPassword = function (password) {
+  // Schema.methods.setPassword = function(password) {
   //Create unique salt
   this.salt = crypto.randomBytes(16).toString("hex");
   //Hasing salt and password with 1000 itr
@@ -65,12 +72,12 @@ User.methods.setPassword = function(password) {
     .toString("hex");
 };
 
-User.methods.validPassword = function(password) { 
-// Schema.methods.validPassword = function(password) { 
-  var hash = crypto.pbkdf2Sync(password,  
-  this.salt, 1000, 64, `sha512`).toString(`hex`); 
-  return this.hash === hash; 
-}; 
+User.methods.validPassword = function (password) {
+  // Schema.methods.validPassword = function(password) { 
+  var hash = crypto.pbkdf2Sync(password,
+    this.salt, 1000, 64, `sha512`).toString(`hex`);
+  return this.hash === hash;
+};
 
 // // Exporting module to allow it to be imported in other files 
 // const User = module.exports = mongoose.model('User', Schema); 
