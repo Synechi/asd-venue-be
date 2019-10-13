@@ -3,13 +3,13 @@ var router = express.Router();
 import User from "../models/User";
 import { userInfo } from "os";
 
-router.route('/venueFlag').post((req, res, next) => {
-User.findById("5d626b1afa8afa89b5f13eb9", (err, user) => {
+router.route('/venueFlag/:id').post((req, res, next) => {
+User.findById(req.params.id, (err, user) => {
     if(err) console.log(err);
     else {
         user["flaggedvenues"].push({
             venueName: req.body.venueName,
-            flag: req.body.flag 
+            venueFlag: req.body.venueFlag 
         })
     }
     user.save((err, user) => {
