@@ -78,6 +78,7 @@ router.route("/getfriendreviews/:id/:placeID").get((req, res) => {
                 User.findById(user.friends[friend].friendID, (err, friend) => {
                     if (err) res.status(500).send(err);
                     for (let venue in friend.flaggedvenues) {
+                        console.log(friend.flaggedvenues[venue])
                         if (friend.flaggedvenues[venue].placeID === req.params.placeID) {
                             let response = {
                                 firstname: friend.firstname,
