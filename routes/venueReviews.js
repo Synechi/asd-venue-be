@@ -208,6 +208,8 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
 
                 } else {
                     res.status(201).send({
+                        id1: user.flaggedvenues[reviews]._id,
+                        id2: req.params.reviewid,
                         message: "No matching review"
                     })
                 }
