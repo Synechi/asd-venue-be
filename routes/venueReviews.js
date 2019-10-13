@@ -87,7 +87,7 @@ router.route("/getfriendreviews/:id/:placeID").get((req, res) => {
                             let response = {
                                 firstname: friend.firstname,
                                 _id: friend._id,
-                                _venueid: friend.flaggedvenues[venues]._id,
+                                _venueid: friend.flaggedvenues[venue]._id,
                                 venueName: friend.flaggedvenues[venue].venueName,
                                 reviewDescription: friend.flaggedvenues[venue].reviewDescription,
                                 placeID: friend.flaggedvenues[venue].placeID,
