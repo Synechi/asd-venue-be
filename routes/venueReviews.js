@@ -91,7 +91,8 @@ router.route("/getfriendreviews/:id/:placeID").get((req, res) => {
                                 venueName: friend.flaggedvenues[venue].venueName,
                                 reviewDescription: friend.flaggedvenues[venue].reviewDescription,
                                 placeID: friend.flaggedvenues[venue].placeID,
-                                rating: friend.flaggedvenues[venue].rating
+                                rating: friend.flaggedvenues[venue].rating,
+                                score: friend.flaggedvenues[venue].score
                             }
                             list.push(response)
 
