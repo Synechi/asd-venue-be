@@ -126,18 +126,19 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
                             if (user.flaggedvenues[reviews].userRated[ratedUser].userID == req.params.id) {
                                 let oldUserRating = user.flaggedvenues[reviews].userRated[ratedUser].userRating;
                                 var y = +req.params.score;
+                                flag = true;
                                 if (y == user.flaggedvenues[reviews].userRated[ratedUser].userRating) {
                                     user.flaggedvenues[reviews].userRated[ratedUser].userRating = 0;
                                     user.flaggedvenues[reviews].score = user.flaggedvenues[reviews].score - oldUserRating;
                                     user.save((err) => {
                                         if (err) res.status(500).send(err);
                                         else {
-                                            res.status(201).send({
+                                            return res.status(201).send({
                                                 message: "User removed rating!"
                                             });
                                         }
                                     })
-                                    flag = true;
+
                                     break;
                                 } else if (y == -1) {
                                     user.flaggedvenues[reviews].userRated[ratedUser].userRating = -1;
@@ -145,26 +146,24 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
                                     user.save((err) => {
                                         if (err) res.status(500).send(err);
                                         else {
-                                            res.status(201).send({
+                                            return res.status(201).send({
                                                 message: "User gave a thumbs down!"
                                             })
                                         }
                                     })
-                                    flag = true;
                                     break;
-                                    ;
+
                                 } else if (y == 1) {
                                     user.flaggedvenues[reviews].userRated[ratedUser].userRating = 1;
                                     user.flaggedvenues[reviews].score = (user.flaggedvenues[reviews].score - oldUserRating) + 1;
                                     user.save((err) => {
                                         if (err) res.status(500).send(err);
                                         else {
-                                            res.status(201).send({
+                                            return res.status(201).send({
                                                 message: "User gave a thumbs up!"
                                             });
                                         }
                                     })
-                                    flag = true;
                                     break;
                                 }
                             }
@@ -179,7 +178,7 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
                             user.save((err) => {
                                 if (err) res.status(500).send(err);
                                 else {
-                                    res.status(201).send({
+                                    return res.status(201).send({
                                         message: "User rating updated!"
                                     });
                                 }
@@ -197,7 +196,7 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").post((req, res) => {
                         user.save((err) => {
                             if (err) res.status(500).send(err);
                             else {
-                                res.status(201).send({
+                                return res.status(201).send({
                                     message: "User rating updated!"
                                 });
                             }
