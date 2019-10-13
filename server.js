@@ -13,6 +13,7 @@ import venueListRouter from "./routes/venuelist";
 import venueReviewsRouter from "./routes/venueReviews";
 
 const app = express(); //making a simple express app
+app.use(cors()); //establishing the connecting with an external server database
 const port = process.env.PORT; //assigning a port (Heroku assigns its own port)
 const router = express.Router(); //creates a router object that is of the router function
 
@@ -30,7 +31,7 @@ var friendStatusUpdateRouter = require("./routes/friendStatusUpdate");
 var friendRemovalRouter = require("./routes/friendRemoval");
 const userRouter = require('./routes/userRouter')(User);
 
-app.use(cors()); //establishing the connecting with an external server database
+
 app.use(bodyParser.json()); //same as above but for passing json through
 app.use("/suggestedFriends", suggestedFriendsRouter);
 app.use("/friendRequest", friendRequestRouter);
