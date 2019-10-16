@@ -128,7 +128,7 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
                         for (let ratedUser in user.flaggedvenues[reviews].userRated) {
                             if (user.flaggedvenues[reviews].userRated[ratedUser].userID == req.params.id) {
                                 let oldUserRating = user.flaggedvenues[reviews].userRated[ratedUser].userRating;
-                                var y = +req.params.score;
+                                var y = Number(req.params.score);
                                 flag = true;
                                 if (y == user.flaggedvenues[reviews].userRated[ratedUser].userRating) {
                                     user.flaggedvenues[reviews].userRated[ratedUser].userRating = 0;
@@ -172,11 +172,12 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
                             }
                         }
                         if (!flag) {
+                            console.log(req.params.score)
                             user.flaggedvenues[reviews].userRated.push({
-                                "userRating": req.params.score,
+                                "userRating": Number(req.params.score),
                                 "userID": req.params.id
                             })
-                            user.flaggedvenues[reviews].score = user.flaggedvenues[reviews].score + +req.params.score;
+                            user.flaggedvenues[reviews].score = user.flaggedvenues[reviews].score + Number(req.params.score);
                             console.log("User not found adding")
                             user.save((err) => {
                                 if (err) res.status(500).send(err);
@@ -190,11 +191,12 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
                         }
 
                     } else if (arr.length == 0) {
+                        console.log(user.flaggedvenues[reviews].score)
                         user.flaggedvenues[reviews].userRated.push({
-                            "userRating": req.params.score,
+                            "userRating": Number(req.params.score),
                             "userID": req.params.id
                         })
-                        user.flaggedvenues[reviews].score = user.flaggedvenues[reviews].score + req.params.score
+                        user.flaggedvenues[reviews].score = user.flaggedvenues[reviews].score + Number(req.params.score)
                         console.log("Saving new user to rating.")
                         user.save((err) => {
                             if (err) res.status(500).send(err);
