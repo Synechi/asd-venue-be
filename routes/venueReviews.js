@@ -10,10 +10,13 @@ router.route("/addReview").post((req, res) => {
 
     console.log(review.rating);
 
+    // Finds user ID
     User.findById(review._userid, (err, user) => {
+        //If an error occurs do this
         if (err) {
             console.log(err);
         }
+        // Else if it is a thumbs Up do this
         else if (user && user._id) {
             if (review.thumbsUpDown == "thumbsUp") {
                 user["flaggedvenues"].push({
@@ -23,6 +26,7 @@ router.route("/addReview").post((req, res) => {
                 thumbsUp: true
                 });
             }
+            // Or if it is a thumbs Down do this
             else if (review.thumbsUpDown == "thumbsDown") {
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
@@ -31,7 +35,7 @@ router.route("/addReview").post((req, res) => {
                 thumbsDown: true
                 });
             }
-
+            // Otherwise push the review into the DB
             else {
                 console.log("hellollllo");
                 user["flaggedvenues"].push({
@@ -40,7 +44,7 @@ router.route("/addReview").post((req, res) => {
                 });
                 
             }
-
+            // Status for the front end
             user.save((err, user1) => {
                 if (err) {
                     // console.log("Review has not been created");
@@ -58,6 +62,7 @@ router.route("/addReview").post((req, res) => {
 
               });
         }
+        // When the user is not found
         else {
             console.log(user)
             var status = {
