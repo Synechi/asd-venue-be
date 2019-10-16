@@ -224,6 +224,62 @@ router.route("/updateScore/:id/:friendid/:reviewid/:score").get((req, res) => {
     })
 })
 
+router.route("/getRating/:id/:friendid/:reviewid").get((req, res) => {
+    User.findById(req.params.friendid, (err, user) => {
 
+        if (err) res.status(500).send(err);
+        if (user === null) {
+            res.status(500).send("null")
+        } else {
+            let reviewFlag = false;
+            for (let reviews in user.flaggedvenues) {
+                reviewFlag = true;
+                if (user.flaggedvenues[reviews]._id == req.params.reviewid) {
+                    let arr = new Array();
+                    let flag = false;
+                    arr = user.flaggedvenues[reviews].userRated
+                    if (arr.length > 0) {
+                        for (let ratedUser in user.flaggedvenues[reviews].userRated) {
+                            if (user.flaggedvenues[reviews].userRated[ratedUser].userID == req.params.id) {
+                                flag = true;
+                                if (user.flaggedvenues[reviews].userRated[ratedUser].userRating == 0) {
+                                    return res.status(201).send({
+                                        rating: 0
+                                    });
+                                } else if (user.flaggedvenues[reviews].userRated[ratedUser].userRating == -1) {
+                                    return res.status(201).send({
+                                        rating: -1
+                                    });
+
+                                } else if (user.flaggedvenues[reviews].userRated[ratedUser].userRating == 1) {
+                                    return res.status(201).send({
+                                        rating: 1
+                                    });
+                                }
+                            }
+                        }
+                        if (!flag) {
+                            return res.status(201).send({
+                                rating: 0
+                            });
+                        }
+
+                    } else if (arr.length == 0) {
+                        return res.status(201).send({
+                            rating: 0
+                        });
+                    }
+                }
+            }
+            if (reviewFlag == false) {
+                res.status(201).send({
+                    message: "No matching review"
+                })
+
+            }
+        }
+
+    })
+})
 
 module.exports = router;
