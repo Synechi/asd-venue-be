@@ -3,11 +3,10 @@ var router = express.Router();
 import User from "../models/User";
 import mongoose from "mongoose";
 
-//Add Review
+//Add Review API function
 router.route("/addReview").post((req, res) => {
     var review = JSON.parse(JSON.stringify(req.body));
     console.log(review);
-
     console.log(review.rating);
 
     // Finds user ID
@@ -16,28 +15,27 @@ router.route("/addReview").post((req, res) => {
         if (err) {
             console.log(err);
         }
-        // Else if it is a thumbs Up do this
+        // If user exist
         else if (user && user._id) {
-            if (review.thumbsUpDown == "thumbsUp") {
+            //If thumbs up
+            if (review.thumbsUpDown == "thumbsUp") { 
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
                 rating: review.rating,
-                // thumbsUp: review.thumbsUp
                 thumbsUp: true
                 });
             }
-            // Or if it is a thumbs Down do this
-            else if (review.thumbsUpDown == "thumbsDown") {
+            // If thumbs down
+            else if (review.thumbsUpDown == "thumbsDown") { 
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
                 rating: review.rating,
-                // thumbsDown: review.thumbsDown
                 thumbsDown: true
                 });
             }
-            // Otherwise push the review into the DB
+            // No thumbs up/down
             else {
-                console.log("hellollllo");
+                // console.log("hellollllo");
                 user["flaggedvenues"].push({
                 reviewDescription: review.reviewDescription,
                 rating: review.rating

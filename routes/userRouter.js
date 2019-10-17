@@ -85,10 +85,6 @@ else if (users === null) {
         });
       });
 
-      
-
-
-
     return userRouter;
 }
 
