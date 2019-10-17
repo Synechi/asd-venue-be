@@ -39,9 +39,13 @@ let User = new Schema({
       _id: false
     }
   ],
+
+  //Creates The Flagged Venues Array In The Database & Determines Which Values Will Be Stored In This Array
   flaggedvenues: [
     {
+      //Declares The VenueName Variable As A String
       venueName: String,
+      //Declares The VenueName Variable As A String
       flag: String,
       reviewDescription: String,
       rating: String,
