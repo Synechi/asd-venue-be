@@ -3,39 +3,41 @@ import User from "../models/User";
 
 var router = express.Router();
 
-//Add Review
+//Add Review API function
 router.route("/addReview").post((req, res) => {
     var review = JSON.parse(JSON.stringify(req.body));
     console.log(review);
-
     console.log(review.rating);
 
+    // Finds user ID
     User.findById(review._userid, (err, user) => {
+        //If an error occurs do this
         if (err) {
             console.log(err);
         }
+        // If user exist
         else if (user && user._id) {
+            //If thumbs up
             if (review.thumbsUpDown == "thumbsUp") {
                 user["flaggedvenues"].push({
                     reviewDescription: review.reviewDescription,
                     rating: review.rating,
-                    // thumbsUp: review.thumbsUp
                     thumbsUp: true,
                     score: 0
                 });
             }
+            // If thumbs down
             else if (review.thumbsUpDown == "thumbsDown") {
                 user["flaggedvenues"].push({
                     reviewDescription: review.reviewDescription,
                     rating: review.rating,
-                    // thumbsDown: review.thumbsDown
                     thumbsDown: true,
                     score: 0
                 });
             }
-
+            // No thumbs up/down
             else {
-                console.log("hellollllo");
+                // console.log("hellollllo");
                 user["flaggedvenues"].push({
                     reviewDescription: review.reviewDescription,
                     rating: review.rating,
@@ -43,7 +45,7 @@ router.route("/addReview").post((req, res) => {
                 });
 
             }
-
+            // Status for the front end
             user.save((err, user1) => {
                 if (err) {
                     // console.log("Review has not been created");
@@ -61,6 +63,7 @@ router.route("/addReview").post((req, res) => {
 
             });
         }
+        // When the user is not found
         else {
             console.log(user)
             var status = {

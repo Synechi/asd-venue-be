@@ -15,16 +15,15 @@ function routes(User) {
     const userRouter = express.Router();
     userRouter.route("/user").get((req, res) => {
       const query1 = {};
+//Login
       if (req.query.email && req.query.password) {
         query1.email = req.query.email;
-//         query1.password = req.query.password;
       }
       User.findOne(query1, (err, users) => {
         if (err) {
-          // console.dir("hello");
           return res.status(404).send(err);
         }
-
+//Encryption for login
 else if (users === null) {
               var status = {"Status" : "User not found"};
               return res.status(400).send(status)
@@ -44,45 +43,23 @@ else if (users === null) {
                 return res.status(200).send(status)
               } 
             }
-
-
-
-        
-//         else if (users && users._id) {
-//         //  console.log("eeeee");
-//           var status = {
-//             "UserID" : users._id
-//           };
-//           return res.status(200).send(status)
-//         }
-//         else {
-//           // console.log("rrrrrr");
-//           var status = {
-//             "Status" : "Incorrect email and/or password"
-//           };
-//           return res.status(200).send(status)
-//         }
       })
     });
+//Create Account
     userRouter.route("/user").post((req, res) => {
         const user = new User(req.body);
         const query = {};
         query.email = user.email;
 
         User.findOne(query, (err, users) => {
-          // console.log(users);
           if (err) {
-            // console.dir("hellogcgfsd");
             return res.status(404).send(err);
           }
           else if (users && users._id) {
-            // console.log(users.email);
             var status = {
               "Status" : "Email Address already exists"
             };
             return res.status(200).send(status);
-            // return res.status(200).send("{'Status': 'Email Address already exists'}");
-            // console.log(users);
           }
           else {
     let user1 = new User();
@@ -99,20 +76,14 @@ else if (users === null) {
 //               password: req.body.password
 //             });
             user1.save().then(result => {
-              // console.log(result);
             });
             var status = {
               "UserID" : user1._id
-              // "Status" : "Account has been created"
             };
             return res.status(201).send(status);
           }
         });
       });
-
-      
-
-
 
     return userRouter;
 }

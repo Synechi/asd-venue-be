@@ -1,7 +1,7 @@
 /**
  * Bella L (24/08/19) - updated the user schema with the friends array.
  * Bella L (24/08/19) - updated the user schema to reflect Data Dictionary
- *
+ * Chantel D - includes venue review section
  */
 
 import mongoose from "mongoose";
@@ -82,9 +82,6 @@ User.methods.validPassword = function (password) {
     this.salt, 1000, 64, `sha512`).toString(`hex`);
   return this.hash === hash;
 };
-
-// // Exporting module to allow it to be imported in other files 
-// const User = module.exports = mongoose.model('User', Schema); 
 
 
 export default mongoose.model("User", User);
