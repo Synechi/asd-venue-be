@@ -49,7 +49,7 @@ app.use("/api", userRouter);
 // app.use("/venueReviews", reviewsRouter);
 // app.use("/user", reviewsRouter);
 
-mongoose.connect(process.env.URL); //calling connect function and passing throug the url for the mongodb server
+mongoose.connect("mongodb+srv://dbconnection:ASD2019@venuedb-yhi2b.mongodb.net/asdvenuedb"); //calling connect function and passing throug the url for the mongodb server
 
 const connection = mongoose.connection; //creating an object out of that connection
 
